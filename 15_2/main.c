@@ -68,3 +68,10 @@ void Systick_Handler(void)
         pressTime++;
     }
 }
+/* GPIO interrupt handler to handle button presses */
+void GPIO_Handler(void) {
+    if (GPIO_PORTF_RIS_R & 0x10) { /* Check if PF4 caused the interrupt */
+        bp = 1;                    /* Set button press flag */
+
+        GPIO_PORTF_ICR_R |= 0x10;  /* Clear the interrupt flag */
+    }
