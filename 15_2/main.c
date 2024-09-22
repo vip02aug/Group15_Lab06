@@ -19,3 +19,21 @@ int main(void) {
         /* Main loop does nothing, interrupts handle the logic */
     }
 }
+/* To initialize GPIO: Set up Port F for the switch (PF4) and LED (PF1) */
+void init(void) {
+    SYSCTL_RCGCGPIO_R |= 0x020;    /* Enable the clock for Port F */
+    GPIO_PORTF_LOCK_R = 0x4C4F434B; /* Unlock Port F for changes */
+    GPIO_PORTF_CR_R = 0x10;        /* Allow changes to PF4 (Switch) */
+    GPIO_PORTF_DIR_R = 0x02;       /* Set PF1 as output for the LED */
+    GPIO_PORTF_DEN_R = 0x12;       /* Enable digital functionality for PF1 and PF4 */
+    GPIO_PORTF_PUR_R |= 0x01;      /* Enable pull-up resistor for the switch */
+
+    /* Set up interrupt for PF4 */
+    GPIO_PORTF_IS_R = 0x00;        /* Configure for edge sensitivity */
+    GPIO_PORTF_IBE_R = 0x00;       /* Interrupt triggered by the condition set by IEV */
+    GPIO_PORTF_IEV_R = 0x00;       /* Falling edge trigger (button press) */
+    GPIO_PORTF_ICR_R = 0x10;       /* Clear any previous interrupt */
+    GPIO_PORTF_IM_R = 0x10;        /* Unmask the interrupt for PF4 */
+
+    NVIC_EN0_R = 0x40000000;       /* Enable the interrupt for Port F in NVIC */
+}
