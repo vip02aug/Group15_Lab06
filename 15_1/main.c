@@ -60,7 +60,22 @@ void Systick_Handler(void) {
         onTime = 0;                          /* Reset onTime when it completes the full cycle */
     }
 }
+/* Interrupt handler for buttons on GPIO Port F (SW1 and SW2) */
+void GPIO_Handler(void) {
+    if (GPIO_PORTF_RIS_R & 0x10) {           /* Check if PF4 (SW1) triggered the interrupt */
+        if (dutyCycle < 100) {
+            dutyCycle += 5;                  /* Increase duty cycle by 5% */
+        }
+        GPIO_PORTF_ICR_R |= 0x10;            /* Clear interrupt flag for PF4 */
+    }
 
+    if (GPIO_PORTF_RIS_R & 0x01) {           /* Check if PF0 (SW2) triggered the interrupt */
+        if (dutyCycle > 0) {
+            dutyCycle -= 5;                  /* Decrease duty cycle by 5% */
+        }
+        GPIO_PORTF_ICR_R |= 0x01;            /* Clear interrupt flag for PF0 */
+    }
+}
 
 
 
