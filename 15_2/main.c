@@ -19,6 +19,7 @@ int main(void) {
         /* Main loop does nothing, interrupts handle the logic */
     }
 }
+
 /* To initialize GPIO: Set up Port F for the switch (PF4) and LED (PF1) */
 void init(void) {
     SYSCTL_RCGCGPIO_R |= 0x020;    /* Enable the clock for Port F */
@@ -36,4 +37,10 @@ void init(void) {
     GPIO_PORTF_IM_R = 0x10;        /* Unmask the interrupt for PF4 */
 
     NVIC_EN0_R = 0x40000000;       /* Enable the interrupt for Port F in NVIC */
+}
+
+/* To set up the SysTick timer */
+void Systick_Init(void) {
+    NVIC_ST_RELOAD_R = count - 1;  /* Load the reload value for SysTick timer */
+    NVIC_ST_CTRL_R = 0x07;         /* Enable SysTick with system clock and interrupt */
 }
