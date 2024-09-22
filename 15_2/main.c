@@ -20,8 +20,7 @@ int main(void) {
     }
 }
 
-/* To initialize GPIO: Set up Port F for the switch (PF4) and LED (PF1) */
-void init(void) {
+void init(void) {                  /* To initialize GPIO: Set up Port F for the switch (PF4) and LED (PF1) */
     SYSCTL_RCGCGPIO_R |= 0x020;    /* Enable the clock for Port F */
     GPIO_PORTF_LOCK_R = 0x4C4F434B; /* Unlock Port F for changes */
     GPIO_PORTF_CR_R = 0x10;        /* Allow changes to PF4 (Switch) */
@@ -68,11 +67,10 @@ void Systick_Handler(void)
         pressTime++;
     }
 }
-/* GPIO interrupt handler to handle button presses */
-void GPIO_Handler(void) {
+void GPIO_Handler(void) {                            /* GPIO interrupt handler to handle button presses */
     if (GPIO_PORTF_RIS_R & 0x10) { /* Check if PF4 caused the interrupt */
         bp = 1;                    /* Set button press flag */
-
+        
         GPIO_PORTF_ICR_R |= 0x10;  /* Clear the interrupt flag */
     }
     if ((GPIO_PORTF_DATA_R & 0x10) == 0x10)   /* Check if the button has been released */
@@ -86,14 +84,13 @@ void GPIO_Handler(void) {
                     dutyCycle += 5; /* Increase the duty cycle by 5% */
                 }
             }
-            else  /* Long press: Greater than 100000 cycles */
+            else                     /* Long press: Greater than 100000 cycles */
             {
                 if (dutyCycle > 0)
                 {
                     dutyCycle -= 5; /* Decrease the duty cycle by 5% */
                 }
             }
-
             pressTime = 0;  /* Reset press time */
             bp = 0;         /* Clear button press flag */
         }
