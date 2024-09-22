@@ -4,10 +4,10 @@
 volatile uint32_t dutyCycle = 50;  /* Starting duty cycle set to 50% */
 volatile uint32_t count = 160;     /* Count value for generating 100 kHz using 16MHz clock */
 
-void init(void);                   /* Declaration for the initialization function */
-void Systick_Init(void);            /* Declaration for SysTick timer setup */
-void GPIO_Handler(void);          /* Declaration for GPIO interrupt function */
-void Systick_Handler(void);        /* Declaration for SysTick interrupt handler */
+void init(void);                   
+void Systick_Init(void);           
+void GPIO_Handler(void);          
+void Systick_Handler(void);       
 
 int main(void) {
     init();   /* Initialize GPIO for the buttons and LED */
@@ -18,7 +18,7 @@ int main(void) {
     }
 }
 
-/* Function to initialize Port F: Configure buttons and the LED */
+/* To initialize Port F: Configure buttons and the LED */
 void init(void) {
     SYSCTL_RCGCGPIO_R |= 0x20;               /* Turn on clock for Port F */
     GPIO_PORTF_LOCK_R = 0x4C4F434B;          /* Unlock Port F to allow changes */
@@ -39,7 +39,7 @@ void init(void) {
     NVIC_EN0_R |= 0x40000000;                /* Enable interrupt for GPIO Port F in NVIC (interrupt 30) */
 }
 
-/* Function to initialize SysTick timer for PWM */
+/* To initialize SysTick timer for PWM */
 void Systick_Init(void) {
     NVIC_ST_RELOAD_R = count - 1;            /* Set reload value for 100 kHz signal */
     NVIC_ST_CTRL_R = 0x07;                   /* Enable SysTick with system clock and interrupts */
