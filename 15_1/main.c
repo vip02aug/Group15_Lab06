@@ -39,6 +39,28 @@ void init(void) {
     NVIC_EN0_R |= 0x40000000;                /* Enable interrupt for GPIO Port F in NVIC (interrupt 30) */
 }
 
+/* Function to initialize SysTick timer for PWM */
+void Systick_Init(void) {
+    NVIC_ST_RELOAD_R = count - 1;            /* Set reload value for 100 kHz signal */
+    NVIC_ST_CTRL_R = 0x07;                   /* Enable SysTick with system clock and interrupts */
+}
+
+/* SysTick interrupt handler to generate PWM signal */
+
+void Systick_Handler(void) {
+    static uint32_t onTime = 0;
+
+    if (onTime < (dutyCycle * count) / 100) {
+        GPIO_PORTF_DATA_R |= 0x02;           /* Turn on the Red LED (PF1) */
+    } else {
+        GPIO_PORTF_DATA_R &= ~0x02;          /* Turn off the Red LED (PF1) */
+    }
+    onTime++;
+    if (onTime >= count) {
+        onTime = 0;                          /* Reset onTime when it completes the full cycle */
+    }
+}
+
 
 
 
