@@ -8,3 +8,17 @@ void init(void);                   /* Declaration for the initialization functio
 void Systick_Init(void);            /* Declaration for SysTick timer setup */
 void GPIO_Handler(void);          /* Declaration for GPIO interrupt function */
 void Systick_Handler(void);        /* Declaration for SysTick interrupt handler */
+
+int main(void) {
+    init();   /* Initialize GPIO for the buttons and LED */
+    Systick_Init(); /* Set up SysTick timer for PWM generation */
+
+    while (1) {
+        /* Main loop does nothing, PWM and duty cycle are controlled by interrupts */
+    }
+}
+
+
+
+
+
