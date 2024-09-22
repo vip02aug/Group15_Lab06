@@ -44,3 +44,27 @@ void Systick_Init(void) {
     NVIC_ST_RELOAD_R = count - 1;  /* Load the reload value for SysTick timer */
     NVIC_ST_CTRL_R = 0x07;         /* Enable SysTick with system clock and interrupt */
 }
+
+/* SysTick handler for generating software PWM and checking how long the button is pressed */
+
+void Systick_Handler(void)
+{
+    static uint32_t onTime = 0;                     /* Tracks the duration the LED stays on */
+    
+    if (onTime < (dutyCycle * count) / 100)         /* Generate PWM: Turn the LED on and off based on the duty cycle */
+    {
+        GPIO_PORTF_DATA_R |= 0x02;                  /* Turn on the red LED */
+    }
+    else
+    {
+        GPIO_PORTF_DATA_R &= ~0x02; /* Turn off the red LED */
+    }
+    onTime++;
+    if (onTime >= count)
+    {
+        onTime = 0;  /* Reset onTime after it reaches the count value */
+    }
+    if (bp) {                                        /* If the button is pressed, increase pressTime */
+        pressTime++;
+    }
+}
